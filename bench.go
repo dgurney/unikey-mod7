@@ -1,5 +1,13 @@
 package main
 
+import (
+	"fmt"
+	"time"
+
+	"github.com/dgurney/unikey/generator"
+	"github.com/dgurney/unikey/validator"
+)
+
 /*
    Copyright (C) 2020 Daniel Gurney
    This program is free software: you can redistribute it and/or modify
@@ -14,33 +22,60 @@ package main
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import (
-	"fmt"
-	"time"
-
-	"github.com/dgurney/unikey/generator"
-)
-
-// generationBenchmark generates the specifed amount of keys and shows the elapsed time. It's meant to be much more understandable and user-accessible than "make bench"
+// generationBenchmark generates amount * 3 keys and times it
 func generationBenchmark(amount int) []string {
 	oem := generator.Mod7OEM{}
 	cd := generator.Mod7CD{}
 	ecd := generator.Mod7ElevenCD{}
-	och := make(chan string)
-	dch := make(chan string)
+	kch := make(chan generator.KeyGenerator)
 	keys := make([]string, 0)
 	started := time.Now()
 	count := 0
 	for i := 0; i < amount; i++ {
 		count++
-		go oem.Generate(och)
-		keys = append(keys, <-och)
-		go cd.Generate(dch)
-		keys = append(keys, <-dch)
-		go ecd.Generate(dch)
-		keys = append(keys, <-dch)
+		go generator.Generate(oem, kch)
+		k := <-kch
+		keys = append(keys, k.String())
+	}
+	for i := 0; i < amount; i++ {
+		count++
+		go generator.Generate(cd, kch)
+		k := <-kch
+		keys = append(keys, k.String())
+	}
+	for i := 0; i < amount; i++ {
+		count++
+		go generator.Generate(ecd, kch)
+		k := <-kch
+		keys = append(keys, k.String())
 	}
 
-	fmt.Printf("Took %s to generate %d keys.\n", time.Since(started).Round(time.Millisecond), count*3)
+	fmt.Printf("Took %s to generate %d keys.\n", time.Since(started).Round(time.Millisecond), count)
 	return keys
+}
+
+// generationBenchmark validates N keys and times it.
+func validationBenchmark(keys []string, count int) {
+	vch := make(chan bool)
+	var ki validator.KeyValidator
+	started := time.Now()
+	for _, k := range keys {
+		switch {
+		case len(k) == 12 && k[4:5] == "-":
+			ki = validator.Mod7ElevenCD{
+				Key: k,
+			}
+		case len(k) == 11 && k[3:4] == "-":
+			ki = validator.Mod7CD{
+				Key: k,
+			}
+		case len(k) == 23 && k[5:6] == "-" && k[9:10] == "-" && k[17:18] == "-" && len(k[18:]) == 5:
+			ki = validator.Mod7OEM{
+				Key: k,
+			}
+		}
+		go validator.Validate(ki, vch)
+		<-vch
+	}
+	fmt.Printf("Took %s to validate %d keys.\n", time.Since(started).Round(time.Millisecond), count)
 }

@@ -17,17 +17,15 @@ package main
 import (
 	"flag"
 	"fmt"
-	"runtime"
 	"time"
 
 	"github.com/dgurney/unikey/generator"
 	"github.com/dgurney/unikey/validator"
 )
 
-const version = "0.0.1"
+const version = "0.1.0"
 
 func main() {
-	all := flag.Bool("a", false, "Generate all kinds of keys.")
 	bench := flag.Int("bench", 0, "Benchmark generation and validation of N*3 keys.")
 	cd := flag.Bool("d", false, "Generate a 10-digit CD key.")
 	elevencd := flag.Bool("e", false, "Generate an 11-digit CD key.")
@@ -48,8 +46,9 @@ func main() {
 	}
 
 	if *bench != 0 {
-		fmt.Printf("Running key generation benchmark with %d keys of each type...\n", *bench)
-		generationBenchmark(*bench)
+		fmt.Printf("Running key generation/validation benchmark with %d keys of each type...\n", *bench)
+		k := generationBenchmark(*bench)
+		validationBenchmark(k, *bench*3)
 		return
 	}
 
@@ -84,55 +83,35 @@ func main() {
 		go validator.Validate(ki, vch)
 		switch {
 		case <-vch:
-			fmt.Printf("%s is valid.\n", k)
+			fmt.Printf("%s is valid\n", k)
 		default:
-			fmt.Printf("%s is invalid.\n", k)
+			fmt.Printf("%s is invalid\n", k)
 		}
 
 		return
 	}
 
-	CDKeych := make(chan string, runtime.NumCPU())
-	eCDKeych := make(chan string, runtime.NumCPU())
-	OEMKeych := make(chan string, runtime.NumCPU())
-	if !*all && !*cd && !*elevencd && !*oem {
+	if !*cd && !*elevencd && !*oem {
 		fmt.Println("You must specify what you want to do! Usage:")
 		flag.PrintDefaults()
 		return
-	}
-	if *elevencd && *oem && *cd {
-		*elevencd, *oem, *cd = false, false, false
-		*all = true
-	}
-	// a and key type are mutually exclusive
-	if *elevencd && *all || *oem && *all || *cd && *all {
-		*all = false
 	}
 
 	oemkey := generator.Mod7OEM{}
 	ecdkey := generator.Mod7ElevenCD{}
 	cdkey := generator.Mod7CD{}
+	gch := make(chan generator.KeyGenerator)
 	for i := 0; i < *repeat; i++ {
-		if *all {
-			go oemkey.Generate(OEMKeych)
-			go cdkey.Generate(CDKeych)
-			go ecdkey.Generate(eCDKeych)
-			fmt.Println(<-OEMKeych)
-			fmt.Println(<-CDKeych)
-			fmt.Println(<-eCDKeych)
+		switch {
+		case *elevencd:
+			go generator.Generate(ecdkey, gch)
+		case *cd:
+			go generator.Generate(cdkey, gch)
+		case *oem:
+			go generator.Generate(oemkey, gch)
 		}
-		if *elevencd {
-			go ecdkey.Generate(eCDKeych)
-			fmt.Println(<-eCDKeych)
-		}
-		if *cd {
-			go cdkey.Generate(CDKeych)
-			fmt.Println(<-CDKeych)
-		}
-		if *oem {
-			go oemkey.Generate(OEMKeych)
-			fmt.Println(<-OEMKeych)
-		}
+		k := <-gch
+		fmt.Println(k.String())
 	}
 
 	if *t {
@@ -148,22 +127,13 @@ func main() {
 			fmt.Println("Could not display elapsed time correctly :(")
 			return
 		}
-		mult := 0
 		switch {
-		default:
-			switch {
-			case *repeat > 1:
-				fmt.Printf("Took %s to generate %d keys.\n", ended, *repeat)
-				return
-			case *repeat == 1:
-				fmt.Printf("Took %s to generate %d key.\n", ended, *repeat)
-				return
-			}
-		case *elevencd && *oem || *elevencd && *cd || *oem && *cd:
-			mult = 2
-		case *all:
-			mult = 3
+		case *repeat > 1:
+			fmt.Printf("Took %s to generate %d keys.\n", ended, *repeat)
+			return
+		case *repeat == 1:
+			fmt.Printf("Took %s to generate %d key.\n", ended, *repeat)
+			return
 		}
-		fmt.Printf("Took %s to generate %d keys.\n", ended, *repeat*mult)
 	}
 }

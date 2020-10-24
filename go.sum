@@ -1,2 +1,4 @@
+github.com/dgurney/mod7 v0.0.0-20201023200018-22675a6ae24d h1:Etsdev8CUUwUqQ+VJESnTSJQMuNdS5Q9YJNTH0gASVI=
+github.com/dgurney/mod7 v0.0.0-20201023200018-22675a6ae24d/go.mod h1:UACVkwg7QYUblz4i6B6VTARdU8HPxs7/tYuGB+wlu3M=
 github.com/dgurney/unikey v0.0.1 h1:g5Fllj+nWMoeNoVEcENgmGijE08kJXxiHql+a3aqJWQ=
 github.com/dgurney/unikey v0.0.1/go.mod h1:vHqV5+bSBPDtT7q2cxY9DBC/gizehUa/pgbqbWpyL0k=
