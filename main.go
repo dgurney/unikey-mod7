@@ -24,16 +24,24 @@ import (
 	"github.com/dgurney/unikey/validator"
 )
 
+const version = "0.0.1"
+
 func main() {
 	all := flag.Bool("a", false, "Generate all kinds of keys.")
 	bench := flag.Int("bench", 0, "Benchmark generation and validation of N*3 keys.")
-	cd := flag.Bool("d", false, "Generate a 10-digit key (aka Mod7CD Key).")
-	Mod7ElevenCD := flag.Bool("e", false, "Generate an 11-digit Mod7CD key.")
-	oem := flag.Bool("o", false, "Generate an Mod7OEM key.")
+	cd := flag.Bool("d", false, "Generate a 10-digit CD key.")
+	elevencd := flag.Bool("e", false, "Generate an 11-digit CD key.")
+	oem := flag.Bool("o", false, "Generate an OEM key.")
 	repeat := flag.Int("r", 1, "Generate n keys.")
-	t := flag.Bool("t", false, "Show how long the generation or batch validation took.")
-	validate := flag.String("v", "", "Validate a Mod7CD or Mod7OEM key.")
+	t := flag.Bool("t", false, "Show how long the generation took.")
+	validate := flag.String("v", "", "Validate a CD or OEM key.")
+	ver := flag.Bool("ver", false, "Show version information and exit")
 	flag.Parse()
+
+	if *ver {
+		fmt.Printf("unikey-mod7 v%s by Daniel Gurney\n", version)
+		return
+	}
 
 	if *repeat < 1 {
 		*repeat = 1
@@ -87,17 +95,17 @@ func main() {
 	CDKeych := make(chan string, runtime.NumCPU())
 	eCDKeych := make(chan string, runtime.NumCPU())
 	OEMKeych := make(chan string, runtime.NumCPU())
-	if !*all && !*cd && !*Mod7ElevenCD && !*oem {
+	if !*all && !*cd && !*elevencd && !*oem {
 		fmt.Println("You must specify what you want to do! Usage:")
 		flag.PrintDefaults()
 		return
 	}
-	if *Mod7ElevenCD && *oem && *cd {
-		*Mod7ElevenCD, *oem, *cd = false, false, false
+	if *elevencd && *oem && *cd {
+		*elevencd, *oem, *cd = false, false, false
 		*all = true
 	}
 	// a and key type are mutually exclusive
-	if *Mod7ElevenCD && *all || *oem && *all || *cd && *all {
+	if *elevencd && *all || *oem && *all || *cd && *all {
 		*all = false
 	}
 
@@ -113,7 +121,7 @@ func main() {
 			fmt.Println(<-CDKeych)
 			fmt.Println(<-eCDKeych)
 		}
-		if *Mod7ElevenCD {
+		if *elevencd {
 			go ecdkey.Generate(eCDKeych)
 			fmt.Println(<-eCDKeych)
 		}
@@ -151,7 +159,7 @@ func main() {
 				fmt.Printf("Took %s to generate %d key.\n", ended, *repeat)
 				return
 			}
-		case *Mod7ElevenCD && *oem || *Mod7ElevenCD && *cd || *oem && *cd:
+		case *elevencd && *oem || *elevencd && *cd || *oem && *cd:
 			mult = 2
 		case *all:
 			mult = 3
