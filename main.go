@@ -23,7 +23,7 @@ import (
 	"github.com/dgurney/unikey/validator"
 )
 
-const version = "0.1.2"
+const version = "0.1.3"
 
 func main() {
 	bench := flag.Int("bench", 0, "Benchmark generation and validation of N*3 keys.")

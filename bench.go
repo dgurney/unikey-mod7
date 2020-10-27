@@ -50,7 +50,20 @@ func generationBenchmark(amount int) []string {
 		keys = append(keys, k.String())
 	}
 
-	fmt.Printf("Took %s to generate %d keys.\n", time.Since(started).Round(time.Millisecond), count)
+	var ended time.Duration
+	switch {
+	case time.Since(started).Round(time.Second) > 1:
+		ended = time.Since(started).Round(time.Millisecond)
+	default:
+		ended = time.Since(started).Round(time.Microsecond)
+	}
+	switch {
+	case count > 1:
+		fmt.Printf("Took %s to generate %d keys.\n", ended, count)
+	case count == 1:
+		fmt.Printf("Took %s to generate %d key.\n", ended, count)
+	}
+
 	return keys
 }
 
@@ -77,5 +90,20 @@ func validationBenchmark(keys []string, count int) {
 		go validator.Validate(ki, vch)
 		<-vch
 	}
-	fmt.Printf("Took %s to validate %d keys.\n", time.Since(started).Round(time.Millisecond), count)
+
+	var ended time.Duration
+	switch {
+	case time.Since(started).Round(time.Second) > 1:
+		ended = time.Since(started).Round(time.Millisecond)
+	default:
+		ended = time.Since(started).Round(time.Microsecond)
+	}
+	switch {
+	case count > 1:
+		fmt.Printf("Took %s to validate %d keys.\n", ended, count)
+		return
+	case count == 1:
+		fmt.Printf("Took %s to validate %d key.\n", ended, count)
+		return
+	}
 }
