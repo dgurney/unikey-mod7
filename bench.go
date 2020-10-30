@@ -30,21 +30,17 @@ func generationBenchmark(amount int) []string {
 	kch := make(chan generator.KeyGenerator)
 	keys := make([]string, 0)
 	started := time.Now()
-	count := 0
 	for i := 0; i < amount; i++ {
-		count++
 		go generator.Generate(oem, kch)
 		k := <-kch
 		keys = append(keys, k.String())
 	}
 	for i := 0; i < amount; i++ {
-		count++
 		go generator.Generate(cd, kch)
 		k := <-kch
 		keys = append(keys, k.String())
 	}
 	for i := 0; i < amount; i++ {
-		count++
 		go generator.Generate(ecd, kch)
 		k := <-kch
 		keys = append(keys, k.String())
@@ -57,18 +53,13 @@ func generationBenchmark(amount int) []string {
 	default:
 		ended = time.Since(started).Round(time.Microsecond)
 	}
-	switch {
-	case count > 1:
-		fmt.Printf("Took %s to generate %d keys.\n", ended, count)
-	case count == 1:
-		fmt.Printf("Took %s to generate %d key.\n", ended, count)
-	}
+	fmt.Printf("Took %s to generate %d keys.\n", ended, len(keys))
 
 	return keys
 }
 
 // generationBenchmark validates N keys and times it.
-func validationBenchmark(keys []string, count int) {
+func validationBenchmark(keys []string) {
 	vch := make(chan bool)
 	var ki validator.KeyValidator
 	started := time.Now()
@@ -98,12 +89,6 @@ func validationBenchmark(keys []string, count int) {
 	default:
 		ended = time.Since(started).Round(time.Microsecond)
 	}
-	switch {
-	case count > 1:
-		fmt.Printf("Took %s to validate %d keys.\n", ended, count)
-		return
-	case count == 1:
-		fmt.Printf("Took %s to validate %d key.\n", ended, count)
-		return
-	}
+
+	fmt.Printf("Took %s to validate %d keys.\n", ended, len(keys))
 }

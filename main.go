@@ -48,7 +48,7 @@ func main() {
 	if *bench != 0 {
 		fmt.Printf("Running key generation/validation benchmark with %d keys of each type...\n", *bench)
 		k := generationBenchmark(*bench)
-		validationBenchmark(k, *bench*3)
+		validationBenchmark(k)
 		return
 	}
 
