@@ -17,13 +17,18 @@ package main
 import (
 	"flag"
 	"fmt"
+	"math/rand"
 	"time"
 
 	"github.com/dgurney/unikey/generator"
 	"github.com/dgurney/unikey/validator"
 )
 
-const version = "0.1.3"
+const version = "0.1.5"
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
 
 func main() {
 	bench := flag.Int("bench", 0, "Benchmark generation and validation of N*3 keys.")
