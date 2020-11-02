@@ -67,15 +67,21 @@ func validationBenchmark(keys []string) {
 		switch {
 		case len(k) == 12 && k[4:5] == "-":
 			ki = validator.Mod7ElevenCD{
-				Key: k,
+				First:  k[0:4],
+				Second: k[5:12],
 			}
 		case len(k) == 11 && k[3:4] == "-":
 			ki = validator.Mod7CD{
-				Key: k,
+				First:  k[0:3],
+				Second: k[4:11],
 			}
 		case len(k) == 23 && k[5:6] == "-" && k[9:10] == "-" && k[17:18] == "-" && len(k[18:]) == 5:
 			ki = validator.Mod7OEM{
-				Key: k,
+				First: k[0:5],
+				// nice
+				Second: k[6:9],
+				Third:  k[10:17],
+				Fourth: k[18:],
 			}
 		}
 		go validator.Validate(ki, vch)

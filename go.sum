@@ -1,2 +1,4 @@
 github.com/dgurney/unikey v0.1.1 h1:lAqlsJcNVunt9MXnvyewImxdKmxFv10D0Xh9QNN0FNI=
 github.com/dgurney/unikey v0.1.1/go.mod h1:vHqV5+bSBPDtT7q2cxY9DBC/gizehUa/pgbqbWpyL0k=
+github.com/dgurney/unikey v0.2.0 h1:b8EDy1zJGmK6KCKFX94Qpzdip5qkTNet039yY3PPU2Y=
+github.com/dgurney/unikey v0.2.0/go.mod h1:vHqV5+bSBPDtT7q2cxY9DBC/gizehUa/pgbqbWpyL0k=
