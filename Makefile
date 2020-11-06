@@ -23,7 +23,13 @@ linux:
 	GOOS=linux GOARCH=386 go build ${LDFLAGS} -o build/linux/386/${PROGRAMSHORT} ${COMMAND}
 clean:
 	rm -rf build/
+docker-image:
+	docker build --build-arg UID=$(shell id -u) --build-arg GID=$(shell id -g) -t unikey-package .
+docker-package:
+	mkdir build
+	docker run -it --mount type=bind,source=${CURDIR}/build,target=/go/src/unikey-mod7/build unikey-package make -j$(shell nproc) package
 cross: windows darwin freebsd linux openbsd
 package: windows darwin linux
 	cd build; zip -r windows.zip windows && zip -r darwin.zip darwin && zip -r linux.zip linux
+release: clean docker-image docker-package
 all: install cross
