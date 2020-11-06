@@ -26,7 +26,7 @@ clean:
 docker-image:
 	docker build --build-arg UID=$(shell id -u) --build-arg GID=$(shell id -g) -t unikey-package .
 docker-package:
-	mkdir build
+	mkdir -p build
 	docker run -it --mount type=bind,source=${CURDIR}/build,target=/go/src/unikey-mod7/build unikey-package make -j$(shell nproc) package
 cross: windows darwin freebsd linux openbsd
 package: windows darwin linux
