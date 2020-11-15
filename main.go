@@ -24,7 +24,7 @@ import (
 	"github.com/dgurney/unikey/validator"
 )
 
-const version = "0.2.0"
+const version = "0.3.0"
 
 func init() {
 	rand.Seed(time.Now().UnixNano())
@@ -65,7 +65,6 @@ func main() {
 	if *validate != "" {
 		k := *validate
 		var ki validator.KeyValidator
-		vch := make(chan bool)
 
 		switch {
 		case len(k) == 12 && k[4:5] == "-":
@@ -91,12 +90,12 @@ func main() {
 			return
 		}
 
-		go validator.Validate(ki, vch)
+		err := validator.Validate(ki)
 		switch {
-		case <-vch:
-			fmt.Printf("%s is valid\n", k)
 		default:
-			fmt.Printf("%s is invalid\n", k)
+			fmt.Printf("%s is valid\n", k)
+		case err != nil:
+			fmt.Printf("%s is invalid: %s\n", k, err)
 		}
 
 		return
@@ -111,17 +110,16 @@ func main() {
 	oemkey := generator.Mod7OEM{}
 	ecdkey := generator.Mod7ElevenCD{}
 	cdkey := generator.Mod7CD{}
-	gch := make(chan generator.KeyGenerator)
+	var k generator.KeyGenerator
 	for i := 0; i < *repeat; i++ {
 		switch {
 		case *elevencd:
-			go generator.Generate(ecdkey, gch)
+			k, _ = generator.Generate(ecdkey)
 		case *cd:
-			go generator.Generate(cdkey, gch)
+			k, _ = generator.Generate(cdkey)
 		case *oem:
-			go generator.Generate(oemkey, gch)
+			k, _ = generator.Generate(oemkey)
 		}
-		k := <-gch
 		fmt.Println(k.String())
 	}
 

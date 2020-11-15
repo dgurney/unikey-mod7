@@ -2,6 +2,6 @@ module github.com/dgurney/unikey-mod7
 
 go 1.16
 
-require github.com/dgurney/unikey v0.2.0
+require github.com/dgurney/unikey v0.3.0
 
 // replace github.com/dgurney/unikey => ../unikey

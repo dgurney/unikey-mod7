@@ -27,22 +27,18 @@ func generationBenchmark(amount int) []string {
 	oem := generator.Mod7OEM{}
 	cd := generator.Mod7CD{}
 	ecd := generator.Mod7ElevenCD{}
-	kch := make(chan generator.KeyGenerator)
 	keys := make([]string, 0)
 	started := time.Now()
 	for i := 0; i < amount; i++ {
-		go generator.Generate(oem, kch)
-		k := <-kch
+		k, _ := generator.Generate(oem)
 		keys = append(keys, k.String())
 	}
 	for i := 0; i < amount; i++ {
-		go generator.Generate(cd, kch)
-		k := <-kch
+		k, _ := generator.Generate(cd)
 		keys = append(keys, k.String())
 	}
 	for i := 0; i < amount; i++ {
-		go generator.Generate(ecd, kch)
-		k := <-kch
+		k, _ := generator.Generate(ecd)
 		keys = append(keys, k.String())
 	}
 
@@ -60,7 +56,6 @@ func generationBenchmark(amount int) []string {
 
 // generationBenchmark validates N keys and times it.
 func validationBenchmark(keys []string) {
-	vch := make(chan bool)
 	var ki validator.KeyValidator
 	started := time.Now()
 	for _, k := range keys {
@@ -84,8 +79,7 @@ func validationBenchmark(keys []string) {
 				Fourth: k[18:],
 			}
 		}
-		go validator.Validate(ki, vch)
-		<-vch
+		validator.Validate(ki)
 	}
 
 	var ended time.Duration
