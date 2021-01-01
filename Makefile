@@ -10,6 +10,7 @@ windows:
 	GOOS=windows GOARM=7 GOARCH=arm go build ${LDFLAGS} -o build/windows/arm/${PROGRAM}.exe ${PROGRAMPATH}
 darwin:
 	GOOS=darwin GOARCH=amd64 go build ${LDFLAGS} -o build/darwin/amd64/${PROGRAM} ${PROGRAMPATH}
+	GOOS=darwin GOARCH=arm64 go build ${LDFLAGS} -o build/darwin/arm64/${PROGRAM} ${PROGRAMPATH}
 freebsd:
 	GOOS=freebsd GOARCH=amd64 go build ${LDFLAGS} -o build/freebsd/amd64/${PROGRAM} ${PROGRAMPATH}
 	GOOS=freebsd GOARCH=386 go build ${LDFLAGS} -o build/freebsd/386/${PROGRAM} ${PROGRAMPATH}
@@ -21,6 +22,9 @@ linux:
 	GOOS=linux GOARCH=arm64 go build ${LDFLAGS} -o build/linux/arm64/${PROGRAM} ${PROGRAMPATH}
 	GOOS=linux GOARCH=arm GOARM=7 go build ${LDFLAGS} -o build/linux/armv7/${PROGRAM} ${PROGRAMPATH}
 	GOOS=linux GOARCH=386 go build ${LDFLAGS} -o build/linux/386/${PROGRAM} ${PROGRAMPATH}
+darwin-universal:
+	mkdir -p build/darwin/universal/
+	lipo -create build/darwin/*/* -output build/darwin/universal/unikey-mod7
 clean:
 	rm -rf build/
 docker-image:
