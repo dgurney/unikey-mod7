@@ -24,7 +24,7 @@ import (
 	"github.com/dgurney/unikey/validator"
 )
 
-const version = "0.3.6"
+const version = "0.3.8"
 
 func init() {
 	rand.Seed(time.Now().UnixNano())
