@@ -24,7 +24,7 @@ import (
 	"github.com/dgurney/unikey/validator"
 )
 
-const version = "0.3.8"
+const version = "0.3.9"
 
 func init() {
 	rand.Seed(time.Now().UnixNano())
@@ -74,6 +74,12 @@ func main() {
 				Second: k[5:12],
 			}
 		case len(k) == 11 && k[3:4] == "-":
+			ki = validator.Mod7CD{
+				First:  k[0:3],
+				Second: k[4:11],
+				Is95:   *Is95,
+			}
+		case len(k) == 11 && *Is95:
 			ki = validator.Mod7CD{
 				First:  k[0:3],
 				Second: k[4:11],
