@@ -1,2 +1,9 @@
-github.com/dgurney/unikey v0.3.8 h1:D7ThqRNux5WBNyp+GsBAJ6H1WJqH9NwnNNr+szk38LA=
-github.com/dgurney/unikey v0.3.8/go.mod h1:vHqV5+bSBPDtT7q2cxY9DBC/gizehUa/pgbqbWpyL0k=
+github.com/dgurney/unikey v0.4.0 h1:8liT1hBgMR2PXmxRiXUqCxkMmKOQ+BhF748eH5wPGGM=
+github.com/dgurney/unikey v0.4.0/go.mod h1:n2GrMQJVZTn9PztnbyPnewdGhLB74QkFmfVr5KWDIrI=
+golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
+golang.org/x/crypto v0.0.0-20201016220609-9e8e0b390897 h1:pLI5jrR7OSLijeIDcmRxNmw2api+jEfxLoykJVice/E=
+golang.org/x/crypto v0.0.0-20201016220609-9e8e0b390897/go.mod h1:LzIPMQfyMNhhGPhUkYOs5KpL4U8rLKemX1yGLhDgUto=
+golang.org/x/net v0.0.0-20190404232315-eb5bcb51f2a3/go.mod h1:t9HGtf8HONx5eT2rtn7q6eTqICYqUVnKs3thJo3Qplg=
+golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
+golang.org/x/sys v0.0.0-20190412213103-97732733099d/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
