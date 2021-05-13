@@ -1,5 +1,5 @@
-github.com/dgurney/unikey v0.4.0 h1:8liT1hBgMR2PXmxRiXUqCxkMmKOQ+BhF748eH5wPGGM=
-github.com/dgurney/unikey v0.4.0/go.mod h1:n2GrMQJVZTn9PztnbyPnewdGhLB74QkFmfVr5KWDIrI=
+github.com/dgurney/unikey v0.4.1 h1:ZIVSthltD6e2woAfoob1GQXiRp2DqwVwtbiDc+3pOCo=
+github.com/dgurney/unikey v0.4.1/go.mod h1:n2GrMQJVZTn9PztnbyPnewdGhLB74QkFmfVr5KWDIrI=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20201016220609-9e8e0b390897 h1:pLI5jrR7OSLijeIDcmRxNmw2api+jEfxLoykJVice/E=
 golang.org/x/crypto v0.0.0-20201016220609-9e8e0b390897/go.mod h1:LzIPMQfyMNhhGPhUkYOs5KpL4U8rLKemX1yGLhDgUto=
