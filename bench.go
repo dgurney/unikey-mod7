@@ -30,16 +30,16 @@ func generationBenchmark(amount int) []string {
 	keys := make([]string, 0)
 	started := time.Now()
 	for i := 0; i < amount; i++ {
-		k, _ := generator.Generate(oem)
-		keys = append(keys, k.String())
+		oem.Generate()
+		keys = append(keys, oem.String())
 	}
 	for i := 0; i < amount; i++ {
-		k, _ := generator.Generate(cd)
-		keys = append(keys, k.String())
+		cd.Generate()
+		keys = append(keys, cd.String())
 	}
 	for i := 0; i < amount; i++ {
-		k, _ := generator.Generate(ecd)
-		keys = append(keys, k.String())
+		ecd.Generate()
+		keys = append(keys, ecd.String())
 	}
 
 	var ended time.Duration
@@ -79,7 +79,7 @@ func validationBenchmark(keys []string) {
 				Fourth: k[18:],
 			}
 		}
-		validator.Validate(ki)
+		ki.Validate()
 	}
 
 	var ended time.Duration
