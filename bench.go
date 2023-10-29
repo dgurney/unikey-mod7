@@ -23,25 +23,17 @@ import (
 */
 
 // generationBenchmark generates amount * 3 keys and times it
-func generationBenchmark(amount int) []string {
+func generationBenchmark(amount uint) {
 	oem := generator.Mod7OEM{}
 	cd := generator.Mod7CD{}
 	ecd := generator.Mod7ElevenCD{}
-	keys := make([]string, 0)
+	a := int(amount)
 	started := time.Now()
-	for i := 0; i < amount; i++ {
+	for i := 0; i < a; i++ {
 		oem.Generate()
-		keys = append(keys, oem.String())
-	}
-	for i := 0; i < amount; i++ {
 		cd.Generate()
-		keys = append(keys, cd.String())
-	}
-	for i := 0; i < amount; i++ {
 		ecd.Generate()
-		keys = append(keys, ecd.String())
 	}
-
 	var ended time.Duration
 	switch {
 	case time.Since(started).Round(time.Second) > 1:
@@ -49,13 +41,26 @@ func generationBenchmark(amount int) []string {
 	default:
 		ended = time.Since(started).Round(time.Microsecond)
 	}
-	fmt.Printf("Took %s to generate %d keys.\n", ended, len(keys))
-
-	return keys
+	fmt.Printf("Took %s to generate %d keys.\n", ended, amount*3)
 }
 
-// generationBenchmark validates N keys and times it.
-func validationBenchmark(keys []string) {
+// validationBenchmark validates amount * 3 keys and times it
+func validationBenchmark(amount uint) {
+	oem := generator.Mod7OEM{}
+	cd := generator.Mod7CD{}
+	ecd := generator.Mod7ElevenCD{}
+	keys := make([]string, 0)
+	a := int(amount)
+	fmt.Printf("Generating %d keys for the test...\n", amount*3)
+	for i := 0; i < a; i++ {
+		oem.Generate()
+		cd.Generate()
+		ecd.Generate()
+		keys = append(keys, cd.String())
+		keys = append(keys, ecd.String())
+		keys = append(keys, oem.String())
+	}
+
 	var ki validator.KeyValidator
 	started := time.Now()
 	for _, k := range keys {

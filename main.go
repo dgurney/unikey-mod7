@@ -24,14 +24,16 @@ import (
 	"github.com/dgurney/unikey/validator"
 )
 
-const version = "0.5.0"
+const version = "0.5.1"
 
 func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
 func main() {
-	bench := flag.Int("bench", 0, "Benchmark generation and validation of N*3 keys.")
+	benchAll := flag.Uint("bench", 0, "Benchmark generation of N*3 keys.")
+	bench := flag.Uint("bg", 0, "Benchmark generation of N*3 keys.")
+	benchValidation := flag.Uint("bv", 0, "Benchmark validation of N*3 keys.")
 	cd := flag.Bool("d", false, "Generate a 10-digit CD key.")
 	elevencd := flag.Bool("e", false, "Generate an 11-digit CD key.")
 	oem := flag.Bool("o", false, "Generate an OEM key.")
@@ -52,9 +54,21 @@ func main() {
 	}
 
 	if *bench != 0 {
-		fmt.Printf("Running key generation/validation benchmark with %d keys of each type...\n", *bench)
-		k := generationBenchmark(*bench)
-		validationBenchmark(k)
+		fmt.Printf("Running key generation benchmark with %d keys of each type...\n", *bench)
+		generationBenchmark(*bench)
+		return
+	}
+
+	if *benchValidation != 0 {
+		fmt.Printf("Running key validation benchmark with %d keys of each type...\n", *benchValidation)
+		validationBenchmark(*benchValidation)
+		return
+	}
+
+	if *benchAll != 0 {
+		fmt.Printf("Running key generation and validation benchmarks with %d keys of each type...\n", *benchAll)
+		generationBenchmark(*benchAll)
+		validationBenchmark(*benchAll)
 		return
 	}
 
