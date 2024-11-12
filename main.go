@@ -24,7 +24,7 @@ import (
 	"github.com/dgurney/unikey/validator"
 )
 
-const version = "0.6.0"
+const version = "0.7.0"
 
 func init() {
 	rand.Seed(time.Now().UnixNano())
@@ -41,7 +41,8 @@ func main() {
 	t := flag.Bool("t", false, "Show how long the generation took.")
 	validate := flag.String("v", "", "Validate a CD or OEM key.")
 	ver := flag.Bool("ver", false, "Show version information and exit.")
-	Is95 := flag.Bool("95", false, "Apply Windows 95 rules to OEM/CD key validation.")
+	Is95 := flag.Bool("95", false, "Apply Windows 95/equivalent old product rules to OEM/CD key validation.")
+	strict11Digit := flag.Bool("11s", false, "Enforce check digit validation on 11-digit CD keys (should not be needed in regular cases)")
 	flag.Parse()
 
 	if *ver {
@@ -84,8 +85,9 @@ func main() {
 		switch {
 		case len(k) == 12 && k[4:5] == "-":
 			ki = validator.Mod7ElevenCD{
-				First:  k[0:4],
-				Second: k[5:12],
+				First:                k[0:4],
+				Second:               k[5:12],
+				EnableCheckDigitRule: *strict11Digit,
 			}
 		case len(k) == 11 && k[3:4] == "-":
 			ki = validator.Mod7CD{
