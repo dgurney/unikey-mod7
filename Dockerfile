@@ -1,4 +1,4 @@
-FROM golang:1.15 as build
+FROM golang:1.23 as build
 ARG UID=1000
 ARG GID=1000
 RUN groupadd -g $GID -o build
